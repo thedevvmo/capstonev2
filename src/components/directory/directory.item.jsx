@@ -1,5 +1,6 @@
 import CategoryItem from "../category-item/category-item"
 import './directory.style.scss';
+import { Outlet } from "react-router-dom";
 
 
 const Directory = ({category}) => { 
@@ -7,10 +8,14 @@ const Directory = ({category}) => {
 
 
     return( 
-        <div className="categories-container">
-            {category.map((category) => (
-            <CategoryItem key={id} categories={category}/>
-            ))}
+        <div>
+            <Outlet />
+
+            <div className="categories-container">
+                {category.map((category) => (
+                    <CategoryItem key={id} categories={category}/>
+                    ))}
+            </div>
         </div>
     )
 }
