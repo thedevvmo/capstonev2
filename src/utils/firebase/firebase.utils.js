@@ -1,5 +1,4 @@
 // Initialise app instace to use as reference for firebase to use this
-
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc} from 'firebase/firestore';
 
@@ -18,20 +17,18 @@ const firebaseConfig = {
     measurementId: "G-G7X3X9RBHB"
 };
 
-
-
 const firebaseApp = initializeApp(firebaseConfig);
+console.log(firebaseApp + 'this is firebase')
 
 // Providers are instructions for this instance of provider for different sign in methods other providers e.g. apple
-const provider = new GoogleAuthProvider()
-provider.setCustomParameters({
+const googleProvider = new GoogleAuthProvider()
+googleProvider.setCustomParameters({
     // force user to select an account
     prompt: "select_account"
 })
 
 
-
-// FIRESTORE DATABASE
+// >>>>>>> FIRESTORE DATABASE
 
 export const db = getFirestore()
 
@@ -66,7 +63,12 @@ export const createUserDocumentFromAuth = async(userAuth) => {
     // If user data does not exist - create / set the document with the data from userAuth in my collection
 }
 
+// >>>>>> Providers
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
+// Sign in with pop up
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
+
+// Sign with redirect
+export const signInWithGoogleRedirect = ()  => signInWithRedirect(auth, googleProvider)
 
