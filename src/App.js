@@ -4,6 +4,7 @@ import Navigation from './routes/navigation/navigation.component';
 import { Routes, Route } from 'react-router-dom';
 import Shop from './routes/Shop/shop-component';
 import SignIn from './routes/sign-in/sign-in.component';
+// import SignUpForm from './components/sign-up-form/sign-up-form.components';
 
 const App = () => {
     

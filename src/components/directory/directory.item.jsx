@@ -10,7 +10,6 @@ const Directory = ({category}) => {
     return( 
         <div>
             <Outlet />
-
             <div className="categories-container">
                 {category.map((category) => (
                     <CategoryItem key={id} categories={category}/>
