@@ -2,6 +2,8 @@
 import { initializeApp } from "firebase/app";
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+
 
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -30,6 +32,7 @@ googleProvider.setCustomParameters({
 
 // Popup
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider)
+export const signInWithUserEmail = () => signInWithEmailAndPassword(auth, googleProvider)
 
 // Redirect
 export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider)
@@ -38,7 +41,7 @@ const db = getFirestore()
 
 
 // Creating/Reading New User
-export const createUserDocFromAuth = async(user) => {
+export const createUserDocFromAuth = async(user, displayName) => {
     const userDocRef = doc(db, 'users', user.uid)
 
     const userSnapshot = await getDoc(userDocRef)
@@ -60,6 +63,12 @@ export const createUserDocFromAuth = async(user) => {
 }
 
 
-
+// Our function
+export const createUserFromSignUp = async (email, password) => {
+    // Ways to protect our code 
+    if(!email || !password) return;
+    // Creating user with firebase function
+    return await createUserWithEmailAndPassword(auth, email, password);
+}
 
 
