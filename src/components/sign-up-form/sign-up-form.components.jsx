@@ -1,52 +1,54 @@
-import { createUserWithEmailAndPassword, } from "firebase/auth";
-import { auth } from "../../utils/firebase/firebase.utils";
-import { createUserDocFromAuth } from "../../utils/firebase/firebase.utils";
 import { useState } from "react"
 import FormInput from "../form-input/form-input.component";
-import { createUserFromSignUp } from "../../utils/firebase/firebase.utils";
 import './sign-up-form.styles.scss'
 import Button from "../button/button.component";
+import { createNewUser, createUserDocumentFromAuth } from "../../utils/firebase/firebase.utils";
 
-const defaultFormFields = {
-    displayName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-}
 
 const SignUpForm = () => {
-    
-    const [formFields, setFormFields] = useState(defaultFormFields);
-    const { displayName, email, password, confirmPassword } = formFields;
+
+    const defaultFormField = {
+        displayName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    }
+
+    const [formField, setFormField] = useState(defaultFormField)
+    const {displayName, email, password, confirmPassword} = formField;
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormField({...formField, [name]:value})
+        console.log({...formField})
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
         if(password !== confirmPassword){
-            alert("Passwords do not match")
-            return
+            alert('Your passwords do not match')
+            console.log('user has entered mismatching passwords')
+            return;
         }
 
         try{
-            console.log(displayName)
-            const { user } = await createUserFromSignUp(email, password)
-            // User creator for all auths - passing user and display name
-            user.displayName = displayName;
-            await createUserDocFromAuth(user)
-            console.log(user)
-            
+            // Creats the user doc with CreateNewUserWithEmailAndPassword
+            const {user} = await createNewUser(email, password)
+            // Creates the document within the collection
+            user.displayName = displayName
+            await createUserDocumentFromAuth(user)
+            e.reset()
+
         }catch(err){
-            console.log(err.message)
             if(err.code === "auth/email-already-in-use"){
-                alert("you already created a user")
+                alert('You already have an account!')
             }
         }
-    }
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-
-        setFormFields({...formFields, [name]:value})
+        e.target.reset()
     }
+    
 
     return(
         <div className="sign-up-container">
@@ -60,10 +62,10 @@ const SignUpForm = () => {
                     inputOptions = {
                         {
                             type: "text", 
-                            onChange: handleChange,
-                            name: displayName, 
+                            required: true,
+                            name: 'displayName',
                             value: displayName,
-                            required: true
+                            onChange: handleChange,
                         }
                     }
                     />
@@ -75,10 +77,10 @@ const SignUpForm = () => {
                         inputOptions = {
                             {
                                 type: "email", 
-                                onChange: handleChange,
-                                name: email, 
+                                required: true,
+                                name: 'email',
                                 value: email,
-                                required: true
+                                onChange: handleChange,
                             }
                         }
                     />
@@ -90,28 +92,25 @@ const SignUpForm = () => {
                         inputOptions = {
                             {
                                 type: "password", 
-                                onChange: handleChange,
-                                name: password, 
-                                value: password,
                                 required: true,
-                                autoComplete: "true"
+                                name: 'password',
+                                value: password,
+                                onChange: handleChange,
                             }
                         }
                     />
 
                 </div>
-
                 <div>
                     <FormInput 
                         label="Confirm Password:"
                         inputOptions = {
                             {
                                 type: "password", 
-                                onChange: handleChange,
-                                name: confirmPassword, 
-                                value: confirmPassword,
                                 required: true,
-                                autoComplete: "true"
+                                name: 'confirmPassword',
+                                value: confirmPassword,
+                                onChange: handleChange,
                             }
                         }
                     />

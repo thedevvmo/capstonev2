@@ -1,36 +1,56 @@
-import { signInWithEmailAndPassword, } from "firebase/auth";
-import { auth } from "../../utils/firebase/firebase.utils";
+import { createUserDocumentFromAuth, signInWithGooglePopUp } from "../../utils/firebase/firebase.utils";
+import { auth, signInUser } from "../../utils/firebase/firebase.utils";
 import { useState } from "react"
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import './sign-in-form.styles.scss'
 
-const defaultFormFields = {
-    email: '',
-    password: '',
-}
 
 const SignInForm = () => {
+
+    const defaultFormField = {
+        email: '',
+        password: '',
+    }
+
+    const [formField, setFormField] = useState(defaultFormField)
+
+    const handleChange = (e) => {
+        const {name, value} = e.target
+        setFormField({...formField, [name]:value})
+    }
     
-    const [formFields, setFormFields] = useState(defaultFormFields);
-    const { email, password } = formFields;
+    const {email, password} = formField;
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-
         try{
-            
+            const userDocRef = await signInUser(email, password)
+            console.log(userDocRef)
         }catch(err){
-            console.log(err.message)
+            switch(err.code){
+                case  'auth/wrong-password':
+                    alert('incorrect password');
+                    break;
+                case 'auth/user-not-found':
+                    alert('no user associated with this email')
+                    break;
+
+                default: console.log(err.message)
+            }
         }
+
+        e.target.reset()
+        
     }
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        console.log(value)
-        setFormFields({...formFields, [name]:value})
-    }
 
+    const signInWithG = async () => {
+        const { user } = await signInWithGooglePopUp()
+        const userDocRef = await createUserDocumentFromAuth(user)
+    } 
+
+    
     return(
         <div className="sign-up-container">
             <h2 className="font-bold text-xl">Have An Account?</h2>
@@ -43,11 +63,11 @@ const SignInForm = () => {
                         label="Email:" 
                         inputOptions = {
                             {
+                                name: 'email',
                                 type: "email", 
+                                required: true,
                                 onChange: handleChange,
-                                name: email, 
                                 value: email,
-                                required: true
                             }
                         }
                     />
@@ -58,18 +78,20 @@ const SignInForm = () => {
                         label="Password:"
                         inputOptions = {
                             {
+                                name:'password',
                                 type: "password", 
-                                onChange: handleChange,
-                                name: password, 
-                                value: password,
                                 required: true,
-                                autoComplete: "true"
+                                onChange: handleChange,
+                                value: password,
                             }
                         }
                     />
                 </div>
 
-                {/* <Button type='submit' >Sign In</Button> */}
+            <div className="flex gap-2">
+                <Button type='submit' >Sign In</Button>
+                <Button type='button' onClick={signInWithG} buttonType={'google'}>Sign In With Google</Button>
+            </div>
 
             </form>
         </div>

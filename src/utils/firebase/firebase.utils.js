@@ -1,10 +1,7 @@
 
 import { initializeApp } from "firebase/app";
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect } from "firebase/auth";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-
-
+import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, createUserWithEmailAndPassword} from "firebase/auth";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -18,57 +15,63 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig)
 
-export const auth = getAuth()
 
 const googleProvider = new GoogleAuthProvider()
+export const auth = getAuth()
 
 
+googleProvider.setCustomParameters(
+    {
+        prompt: 'select_account'
+    }
+)
 
-// Set custom parameters
-googleProvider.setCustomParameters({
-    // Force them to select account
-    prompt: "select_account"
-});
 
-// Popup
-export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider)
-export const signInWithUserEmail = () => signInWithEmailAndPassword(auth, googleProvider)
+export const signInWithGooglePopUp = () => signInWithPopup(auth, googleProvider)
 
-// Redirect
-export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider)
+export const signInWithAuth = (email, password) => signInWithEmailAndPassword(auth, email, password)
+    
 
+
+// Creating new user - pull data base
 const db = getFirestore()
+// Create new user doc
 
 
-// Creating/Reading New User
-export const createUserDocFromAuth = async(user, displayName) => {
-    const userDocRef = doc(db, 'users', user.uid)
+// Function to create userDOC
+export const createUserDocumentFromAuth = async(userAuth, otherCredientials={}) => {
+    if (!userAuth) return;
 
-    const userSnapshot = await getDoc(userDocRef)
-    // If user data exists - if it does exist - do nothing
-    if(!userSnapshot.exists()){
-        const { displayName, email } = user;
-        const createdAt = new Date();
+    const userDocRef = doc(db, 'users', userAuth.uid)
+    const snapShot = await getDoc(userDocRef);
 
-        try{ 
-            await 
-            setDoc(userDocRef, {displayName, email, createdAt});
-            }
-        catch(err){
+    console.log(snapShot)
+    console.log(snapShot.exists())
+
+    if(!snapShot.exists()){
+        const createdAt = new Date()
+        const {displayName, email} = userAuth
+
+
+        try{
+            await setDoc(userDocRef, {
+                displayName,
+                email,
+                createdAt
+            })
+        }catch(err){
             console.log(err.message)
-        }}
-        
+        }
+    }
+
     return userDocRef;
-    // If user data does not exists - create/set the data 
 }
 
+export const signInUser = (email, password) => signInWithEmailAndPassword(auth, email, password)
 
-// Our function
-export const createUserFromSignUp = async (email, password) => {
-    // Ways to protect our code 
-    if(!email || !password) return;
-    // Creating user with firebase function
-    return await createUserWithEmailAndPassword(auth, email, password);
+
+export const createNewUser = async (email, password) => {
+    if (!email || !password) return;
+    return await createUserWithEmailAndPassword(auth, email, password)
 }
-
 
