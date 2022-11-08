@@ -4,9 +4,6 @@ import { useState } from "react"
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import './sign-in-form.styles.scss'
-// Gives us back whatever value
-import { useContext } from "react";
-import { UserContext } from "../../contexts/user.context";
 
 
 const SignInForm = () => {
@@ -15,8 +12,6 @@ const SignInForm = () => {
         email: '',
         password: '',
     }
-
-    const { setCurrentUser } = useContext(UserContext)
 
     const [formField, setFormField] = useState(defaultFormField)
 
@@ -30,8 +25,7 @@ const SignInForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
-            const { user } = await signInUser(email, password)
-            setCurrentUser( user )
+            await signInUser(email, password)
         }catch(err){
             switch(err.code){
                 case  'auth/wrong-password':
@@ -46,13 +40,11 @@ const SignInForm = () => {
         }
 
         e.target.reset()
-        
     }
 
 
     const signInWithG = async () => {
-        const { user } = await signInWithGooglePopUp()
-        const userDocRef = await createUserDocumentFromAuth(user)
+        await signInWithGooglePopUp()
     } 
 
     

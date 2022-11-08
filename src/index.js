@@ -10,6 +10,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
+      {/* Any component inside the provider has access to the context */}
       <UserProvider >
         <App />
       </UserProvider>

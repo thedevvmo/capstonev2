@@ -1,7 +1,22 @@
 
 import { initializeApp } from "firebase/app";
-import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
-import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, createUserWithEmailAndPassword} from "firebase/auth";
+
+import { 
+    doc, 
+    getDoc, 
+    getFirestore, 
+    setDoc 
+} from 'firebase/firestore'
+
+import { 
+    getAuth, 
+    GoogleAuthProvider, 
+    signInWithEmailAndPassword, 
+    signInWithPopup, 
+    onAuthStateChanged,
+    signOut, 
+    createUserWithEmailAndPassword
+} from "firebase/auth";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -44,10 +59,6 @@ export const createUserDocumentFromAuth = async(userAuth, otherCredientials={}) 
 
     const userDocRef = doc(db, 'users', userAuth.uid)
     const snapShot = await getDoc(userDocRef);
-
-    console.log(snapShot)
-    console.log(snapShot.exists())
-
     if(!snapShot.exists()){
         const createdAt = new Date()
         const {displayName, email} = userAuth
@@ -75,3 +86,10 @@ export const createNewUser = async (email, password) => {
     return await createUserWithEmailAndPassword(auth, email, password)
 }
 
+export const signOutUser = () => signOut(auth)
+
+// Creating Listener
+
+export const onAuthStateChangedListener = (callback) => {
+    onAuthStateChanged(auth, callback)
+}

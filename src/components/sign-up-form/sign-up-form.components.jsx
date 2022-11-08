@@ -7,6 +7,7 @@ import { createNewUser, createUserDocumentFromAuth } from "../../utils/firebase/
 
 const SignUpForm = () => {
 
+
     const defaultFormField = {
         displayName: '',
         email: '',
@@ -20,7 +21,6 @@ const SignUpForm = () => {
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormField({...formField, [name]:value})
-        console.log({...formField})
     }
 
     const handleSubmit = async (e) => {
