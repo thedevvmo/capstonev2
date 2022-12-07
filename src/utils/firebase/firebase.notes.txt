@@ -1,0 +1,49 @@
+#Intro on how to use firebase - Setting Up Provider & Basics
+
+1. Pull in the firebase config and initialiazise the app using initialiaziseApp(Config)
+
+2. Create an auth instance --> getAuth()
+
+3. We can signIn using a popUp or using redirect
+
+4.Create your provider e.g. for google auth provider or apple provider
+            const googleProvider = new GoogleAuthProvider()
+
+5. If you are using google provider you need to add .setCustomParameters with the prompt parameter of "select-account"
+
+This will cause the account selector to display, even if there's a single logged-in user, just as you asked.
+
+6. Export auth instance 
+
+7. Export custom function for sign in -> signInWith{ProviderName} = () => {signInMethod}(auth, provider)
+
+8. Import sign in method into the form, Call the function using an async method.
+This returns the access token from the provider NOT stored within the database.
+
+
+#Creating the database
+
+1. Import methods from firebase/firestore 
+    -getFirestore - instantiate firestore
+    -doc
+    -getDoc - get the data
+    -setDoc - set the data
+
+2. Instantiate db from getFirestore()
+
+3. Create User document in a function - async function.
+
+    a. Create the user collection with a document pattern. This tells firestore to give you the document for this specific user.
+
+        e.g. const userDocRef = doc(db, 'users', userAuth.uid)
+
+    b. Now via an await method use the getDoc method to get the document for this specific userDocRef (snapShot) .Check if there is an existing document reference. 
+
+        If data exists just return the snapshot using return userDocRef, if it does not exist create/set the document with the data. 
+
+    c. Pull off the displayName & email from the userAuth, create a createdAt to get the date of creation
+
+    d. Create a try catch block --> await setDoc() using displayName.. CreatedAt.. etc
+
+    e. Catch the error.
+

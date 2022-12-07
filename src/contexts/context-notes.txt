@@ -1,0 +1,15 @@
+#Creating context 
+
+to create context we need to have a default value - 
+which will be exported and altered later on....
+
+e.g. export const ProductContext = createContext({
+    #data we want to export
+})
+
+#Creating provider function 
+
+- function that contains a useState function which is the value that will be given to the context
+
+- the Provider gives access to the context to its children
+    e.g. <ProductContext.Provider value={value}>{children}</ProductContext.Provider>
