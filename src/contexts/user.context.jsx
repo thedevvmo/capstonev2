@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { onAuthStateChangedListener, signOutUser } from "../utils/firebase/firebase.utils";
+import { onAuthStateChangedListener } from "../utils/firebase/firebase.utils";
 import { createUserDocumentFromAuth } from "../utils/firebase/firebase.utils";
 
 
@@ -28,8 +28,3 @@ export const UserProvider = ({children}) => {
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
-
-// Use it to wrap the children
-{/* <UserProvider>
-    <App />
-</UserProvider> */}

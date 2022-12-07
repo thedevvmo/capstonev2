@@ -1,6 +1,6 @@
 
 import { signInWithGooglePopUp } from "../../../utils/firebase/firebase.utils";
-import { auth, signInUser } from "../../../utils/firebase/firebase.utils";
+import { signInUser } from "../../../utils/firebase/firebase.utils";
 import { useState } from "react"
 import FormInput from "../form-input/form-input.component";
 import Button, { BUTTON_TYPE_CLASSES } from "../../button/button.component";

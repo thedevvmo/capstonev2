@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { Fragment } from "react";
 import { NavigationContainer, LogoContainer, NavLinks, NavLink } from './navigation.style'
 import { useContext } from "react";
