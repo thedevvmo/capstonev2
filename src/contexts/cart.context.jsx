@@ -1,4 +1,5 @@
 import { createContext, useState, useLayoutEffect } from "react";
+import { useReducer } from "react";
 
 const addCartItem = (cartItems, productToAdd) => {
     // find if cartItems contains productToAdd
@@ -33,50 +34,99 @@ const clearCartItem = (cartItems, cartItemToClear) => cartItems.filter((cartItem
 
 
 export const CartContext = createContext({
-    isCartOpen: false,
     setIsCartOpen: () => {},
-    cartItems: [],
     addItemToCart: () => {},
     removeItemToCart: () => {},
-    cartCount: 0,
     clearItemFromCart: () => {},
-    cartTotal: 0,
 })
+
+const CART_ACTION_TYPES = {
+    SET_CART_ITEMS: 'SET_CART_ITEMS',
+    SET_IS_CART_OPEN: 'SET_IS_CART_OPEN'
+}
+
+// Initial state stores readable values
+const INITIAL_STATE = {
+    isCartOpen: true,
+    cartItems: [],
+    cartCount: 0,
+    cartTotal: 0,
+}
+
+const cartReducer = (state, action) => {
+    const {type, payload} = action;
+
+    switch(type){
+        case CART_ACTION_TYPES.SET_CART_ITEMS:
+
+            return{
+                ...state,
+                ...payload
+            }
+
+        case CART_ACTION_TYPES.SET_IS_CART_OPEN:
+            
+            return{
+                ...state,
+                isCartOpen: payload
+            }
+            
+        default: throw new Error(`unhandled type of ${type} in cartReducer`)
+    }
+}
+
 
 
 export const CartProvider = ({children}) => {
     
-    const [isCartOpen, setIsCartOpen] = useState(false)
-    const [cartItems, setCartItems] = useState([])
-    // const [cartTotal, setCartTotal] = useState(0)
+    const [state, dispatch] = useReducer(cartReducer, INITIAL_STATE)
+    const {cartItems, isCartOpen, cartCount, cartTotal} = state
 
-    const newCartCount = cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
 
-    // useLayoutEffect(() => {
-    //     const newPrice = cartItems.reduce((total, cartItem) => total + cartItem.price * cartItem.quantity, 0)
-    //   return () => {
-    //     setCartTotal(newPrice)
-    //   };
-    // }, [cartItems]);
-
-    const total = cartItems.reduce((acc, el) => acc + el.price * el.quantity, 0)
     
+    const updateCartItemsReducer = (newCartItems) => {
+        const newCartTotal = newCartItems.reduce((acc, el) => acc + el.price * el.quantity, 0)
+        // const newPrice = newCartItems.reduce((total, cartItem) => total + cartItem.price * cartItem.quantity, 0)
+        const newCartCount = newCartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
+
+        dispatch({type: CART_ACTION_TYPES.SET_CART_ITEMS, payload: { cartItems: newCartItems, cartTotal: newCartTotal, cartCount: newCartCount}})
+        /*
+            generate newCartTotal
+            
+            generate newCartCount
+
+            dispatch new action with payload = {
+                newCartItem,
+                newCartTotal,
+                newCartCount
+            }
+            
+        */
+    }
 
     const addItemToCart = (productToAdd) => {
-        setCartItems(addCartItem(cartItems, productToAdd))
+        const newCartItems = (addCartItem(cartItems, productToAdd))
+        updateCartItemsReducer(newCartItems)
     }
 
     const removeItemToCart = (cartItemToRemove) => {
-        setCartItems(removeCartItem(cartItems, cartItemToRemove))
+        const newCartItems = (removeCartItem(cartItems, cartItemToRemove))
+        updateCartItemsReducer(newCartItems)
     }
 
     const clearItemFromCart = (cartItemToClear) => {
-        setCartItems(clearCartItem(cartItems, cartItemToClear))
+        const newCartItems = (clearCartItem(cartItems, cartItemToClear))
+        updateCartItemsReducer(newCartItems)
     }
 
-    const value = { isCartOpen, setIsCartOpen, addItemToCart, removeItemToCart, cartItems, newCartCount, clearItemFromCart, total }
+    const setIsCartOpen = (bool) => {
+        dispatch({ type: CART_ACTION_TYPES.SET_IS_CART_OPEN, payload: bool })
+    }
+
+    const value = { isCartOpen, setIsCartOpen, addItemToCart, removeItemToCart, cartItems, clearItemFromCart, cartCount, cartTotal }
 
     return(
         <CartContext.Provider value={value} >{children}</CartContext.Provider>
     )
 }
+
