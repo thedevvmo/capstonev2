@@ -1,4 +1,5 @@
-import { createContext, useState, useLayoutEffect } from "react";
+import { createContext } from "react";
+import { createAction } from "../utils/reducer.utilis";
 import { useReducer } from "react";
 
 const addCartItem = (cartItems, productToAdd) => {
@@ -47,7 +48,7 @@ const CART_ACTION_TYPES = {
 
 // Initial state stores readable values
 const INITIAL_STATE = {
-    isCartOpen: true,
+    isCartOpen: false,
     cartItems: [],
     cartCount: 0,
     cartTotal: 0,
@@ -89,7 +90,7 @@ export const CartProvider = ({children}) => {
         // const newPrice = newCartItems.reduce((total, cartItem) => total + cartItem.price * cartItem.quantity, 0)
         const newCartCount = newCartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
 
-        dispatch({type: CART_ACTION_TYPES.SET_CART_ITEMS, payload: { cartItems: newCartItems, cartTotal: newCartTotal, cartCount: newCartCount}})
+        dispatch(createAction(CART_ACTION_TYPES.SET_CART_ITEMS, { cartItems: newCartItems, cartTotal: newCartTotal, cartCount: newCartCount}))
         /*
             generate newCartTotal
             
@@ -120,7 +121,7 @@ export const CartProvider = ({children}) => {
     }
 
     const setIsCartOpen = (bool) => {
-        dispatch({ type: CART_ACTION_TYPES.SET_IS_CART_OPEN, payload: bool })
+        dispatch(createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, bool))
     }
 
     const value = { isCartOpen, setIsCartOpen, addItemToCart, removeItemToCart, cartItems, clearItemFromCart, cartCount, cartTotal }

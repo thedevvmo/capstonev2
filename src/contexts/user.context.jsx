@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
+import { createAction } from "../utils/reducer.utilis";
 import { onAuthStateChangedListener } from "../utils/firebase/firebase.utils";
 import { createUserDocumentFromAuth } from "../utils/firebase/firebase.utils";
 
@@ -57,9 +58,8 @@ export const UserProvider = ({children}) => {
     // State object - current state & second is a dispatch function - passed through userReducer to change state accordingly
     const [ state, dispatch ] = useReducer(userReducer, INITIAL_STATE)
     const { currentUser } = state
-    console.log(currentUser)
     const setCurrentUser = (user) => {
-        dispatch({type: USER_ACTION_TYPES.SET_CURRENT_USER, payload: user})
+        dispatch(createAction(USER_ACTION_TYPES.SET_CURRENT_USER, user))
     }
     
     // Whenever statechanges -> display user
