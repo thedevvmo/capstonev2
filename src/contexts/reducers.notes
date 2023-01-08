@@ -1,0 +1,75 @@
+
+const userReducer = (state, action) => {
+    return{
+        currentUser: payload
+    }
+}
+
+## reducers are functions that return a new object
+reducers have a state and action parameter
+
+payload is going to store the value that is important for the reducer to know what to update the state value with
+
+thus a switch statement should be use so that the type being passed e.g. 'SET_CURRENT_USER' dictates the type of action being taken, in this scenario since we are using reducers without redux we will have to use a default switch statement incase our switch cases are not being met.
+
+
+## if you have multiple values you can spread the previous state using the ...state
+e.g.
+
+ switch(type){
+        case 'SET_CURRENT_USER': 
+        return{
+            ...state
+            currentUser: payload
+        }
+         default: 
+            throw new Error(`Unhandled type of ${type} in userReducer`)
+}
+
+## Because it would be a source of errors for us to have the cases as string (typos) it is good practice to use a seperate object function instead - USER_ACTION_TYPES
+
+export const USER_ACTION_TYPES = {
+    SET_CURRENT_USER: 'SET_CURRENT_USER'
+}
+
+that way the case becomes USER_ACTION_TYPES.SET_CURRENT_REDUCER
+
+## The final product should look similar to this: 
+
+export const USER_ACTION_TYPES = {
+    SET_CURRENT_USER: 'SET_CURRENT_USER'
+}
+
+const userReducer = (state, action) => {
+    const { type, payload } = action
+
+    switch(type){
+        case USER_ACTION_TYPES.SET_CURRENT_USER: 
+        return{
+            currentUser: payload
+        }
+        default: 
+            throw new Error(`Unhandled type of ${type} in userReducer`)
+    }
+}
+
+
+#### UTILISING REDUCERS
+
+useReducer() hook takes in two values - 1. The Reducer we just created and 2. The Initial State. Need to set up the initial state first in a seperate function example.
+
+
+const INITIAL_STATE = {
+    currentUser: null
+}
+
+useReducer is similar to useState in the sense that destructures two paramaters from - state & dispatch
+const [state, dispatch] = useReducer(userReducer, INITIAL_STATE)
+
+initial state parameters can be destructured from the state and updated using a dispatch() function
+
+now we create a dispatch function call back within a function (optimal code) where by the dispatch function takes in two parameters within an object -> the type and the payload.
+
+const setCurrentUser = (user) => {
+    dispatch( {type: USER_ACTION_TYPES.SET_CURRENT_USER, payload: user })
+}
