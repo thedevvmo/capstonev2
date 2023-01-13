@@ -8,8 +8,13 @@ import { UserContext } from "../../contexts/user.context";
 import { CartContext } from "../../contexts/cart.context";
 import CartIcon from "../../components/cart/cart-icon/cart-icon.component";
 import { ReactComponent as CrwnLogo}  from "./../../assets/crown(1).svg";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/user/user.selector";
 
 const Navigation = () => {
+
+    const user = useSelector(selectCurrentUser)
+
     
     const { currentUser } = useContext(UserContext)
     const { isCartOpen,  } = useContext(CartContext)
@@ -27,7 +32,7 @@ const Navigation = () => {
                         Shop
                     </NavLink>
                     {
-                        currentUser ? (
+                        user ? (
                             <NavLink as='span' onClick={signOutUser}>Sign Out</NavLink>
                         ):(
                             <NavLink to='/auth'>

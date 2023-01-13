@@ -1,0 +1,46 @@
+Store folder contains all our redux code.
+
+Store will is where we generate store object to use in react application.
+
+ROOT_REDUCER contains a combination of all our reducers
+
+1. reducers stored in the .reducer file under this boiler plate => 
+
+reducer = (state = (initial state), action) => {
+    const {type, payload} = action
+
+    switch(type){
+        case CASE_1: 
+        return{
+            ...state,
+            objectToBeChanged: payload
+        }
+
+        default: return state
+    }
+}
+
+default is to return state since we have more than one reducer
+
+2. Now we must combine reducers in root reducer
+
+export const rootReducer = combineReducers({
+    user: userReducer
+    key: value
+})
+
+3. Now we must upload reducer to our store/storage:
+
+We can use middlewares for enhancement if we have more than one we need to compose them 
+
+const middleWares = ['...','...']
+
+const composedEnhancers = compose(applyMiddleware(...middleWares))
+
+store takes three parameters: combined reducer, undefined, middlewares
+
+const store = createStore(
+    rootReducer,
+    undefined,
+    composedEnhancers
+)
