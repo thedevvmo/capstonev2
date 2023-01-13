@@ -1,6 +1,7 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useReducer } from "react";
 import { onAuthStateChangedListener } from "../utils/firebase/firebase.utils";
 import { createUserDocumentFromAuth } from "../utils/firebase/firebase.utils";
+import { createAction } from "../utils/firebase/reducer.utils";
 
 
 // Default value - (actual value you want to access)
@@ -10,9 +11,40 @@ export const UserContext = createContext({
 })
 
 
+export const USER_ACTION_TYPES = {
+    SET_CURRENT_USER: 'SET_CURRENT_USER'
+}
+
+export const userReducer = (state, action) => {
+
+    const { type, payload } = action
+    
+    switch(type){
+        case USER_ACTION_TYPES.SET_CURRENT_USER:
+            return{
+                ...state,
+                currentUser: payload
+            }
+        default: throw new Error(`Unhandled type ${type} in userReducer`)
+    }
+}
+
+const INITIAL_STATE = {
+    currentUser: null
+}
+
+
 export const UserProvider = ({children}) => {
-    // Any of child components can access the value anywhere inside the component tree
-    const [currentUser, setCurrentUser] = useState(null);
+const [ {currentUser}, dispatch ] = useReducer(userReducer, INITIAL_STATE);
+        
+// Any of child components can access the value anywhere inside the component tree
+
+
+    const setCurrentUser = (user) => {
+       
+        dispatch( createAction(USER_ACTION_TYPES.SET_CURRENT_USER, user ))
+    }
+
     const value = {currentUser, setCurrentUser}
     
     // Whenever statechanges -> display user
