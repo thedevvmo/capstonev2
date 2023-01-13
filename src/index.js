@@ -15,11 +15,9 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       {/* Any component inside the provider has access to the context */}
-          <CategoriesProvider>
-            <CartProvider>
-              <App />
-            </CartProvider>
-          </CategoriesProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
     </BrowserRouter>
   </Provider>
   </React.StrictMode>
