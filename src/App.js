@@ -4,14 +4,13 @@ import Navigation from './routes/navigation/navigation.component';
 import { Routes, Route } from 'react-router-dom';
 import Shop from './routes/shop/shop.component';
 import { useEffect } from 'react';
-import { getCategoriesAndDocuments, onAuthStateChangedListener } from './utils/firebase/firebase.utils';
+import { onAuthStateChangedListener } from './utils/firebase/firebase.utils';
 import { createUserDocumentFromAuth } from './utils/firebase/firebase.utils';
 import { setCurrentUser } from './store/user/user.actions';
 import Checkout from './routes/checkout/checkout.component';
 import Authentication from './routes/authentication/authentication.component';
 // import SignUpForm from './components/sign-up-form/sign-up-form.components';
 import { useDispatch } from 'react-redux';
-import { setCategoriesMap } from './store/categories/category.actions';
 
 
 const App = () => {
@@ -28,15 +27,6 @@ const App = () => {
           dispatch(setCurrentUser(user))
       }) 
       return unsubscribe
-  }, [])
-
-  useEffect(() => {
-    const getCategoriesMap = async () => {
-        const categoryMap = await getCategoriesAndDocuments()
-        console.log(categoryMap)
-        dispatch(setCategoriesMap(categoryMap))
-    }
-    getCategoriesMap()
   }, [])
 
   return (

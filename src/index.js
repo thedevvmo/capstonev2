@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
-import { CategoriesProvider } from './contexts/categories.context';
 import { Provider } from 'react-redux';
 import { CartProvider } from './contexts/cart.context';
 import { store } from './store/store';

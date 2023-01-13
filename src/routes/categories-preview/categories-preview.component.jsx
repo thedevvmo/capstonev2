@@ -1,6 +1,5 @@
 
-import { CategoriesContext } from '../../contexts/categories.context'
-import { useContext } from 'react'
+
 import CategoryPreview from '../../components/category-preview/category-preview.component'
 import { useSelector } from 'react-redux'
 import { categoriesSelector } from '../../store/categories/category.selectors'
