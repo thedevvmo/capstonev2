@@ -44,3 +44,7 @@ const store = createStore(
     undefined,
     composedEnhancers
 )
+
+SELECTORS
+
+selectors should always contain the most basic form of data
